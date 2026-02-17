@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+     <!-- 
+    ========================================================================================================================
+    AUTOR PROJEKTU I WŁAŚCICIEL KODU:
+    
+    ██╗  ██╗    ███████╗ █████╗ ███████╗██╗
+    ╚██╗██╔╝    ██╔════╝██╔══██╗╚══███╔╝██║
+     ╚███╔╝     █████╗  ███████║  ███╔╝ ██║
+     ██╔██╗     ██╔══╝  ██╔══██║ ███╔╝  ██║
+    ██╔╝ ██╗    ██║     ██║  ██║███████╗██║
+    ╚═╝  ╚═╝    ╚═╝     ╚═╝  ╚═╝╚══════╝╚═╝
+
+    ------------------------------------------------------------------------------------------------------------------------
+    UWAGA: NINIEJSZY KOD ŹRÓDŁOWY ORAZ WARSTWA WIZUALNA PODLEGAJĄ OCHRONIE PRAWNEJ.
+    NA PODSTAWIE USTAWY Z DNIA 4 LUTEGO 1994 R. O PRAWIE AUTORSKIM I PRAWACH POKREWNYCH (DZ. U. Z 2021 R. POZ. 1062 Z PÓŹN. ZM.).
+    KOPIOWANIE, ROZPOWSZECHNIANIE LUB MODYFIKACJA BEZ PISEMNEJ ZGODY AUTORA (X_FAZI) JEST ZABRONIONE.
+    ========================================================================================================================
+    -->   
+<html lang="pl" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maporium | Architects</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            gold: '#D4AF37',
+                            blue: '#0044CC',
+                            black: '#020202',
+                            charcoal: '#0a0a0a',
+                            border: '#1f1f1f',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Inter"', 'sans-serif'],
+                        display: ['"Space Grotesk"', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace'],
+                    },
+                    animation: {
+                        'pan': 'pan 60s linear infinite alternate',
+                        'avatar-pulse': 'avatarPulse 3s infinite',
+                        'scroll': 'scroll 40s linear infinite',
+                    },
+                    keyframes: {
+                        pan: {
+                            '0%': { transform: 'scale(1.1) translate(0%, 0%)' },
+                            '100%': { transform: 'scale(1.2) translate(-5%, -5%)' },
+                        },
+                        avatarPulse: {
+                            '0%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0.4)' },
+                            '70%': { boxShadow: '0 0 0 10px rgba(255, 255, 255, 0)' },
+                            '100%': { boxShadow: '0 0 0 0 rgba(255, 255, 255, 0)' },
+                        },
+                        scroll: {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-100%)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #020202;
+            color: #ffffff;
+            overflow-x: hidden;
+            cursor: auto;
+        }
+
+        .bg-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+            opacity: 0.4; 
+        }
+
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background-color: #020202;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .preloader-bg {
+            position: absolute;
+            inset: -20px;
+            background-image: url('https://images.unsplash.com/photo-1629814596130-979929851610?q=80&w=2532&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            filter: blur(15px) brightness(0.2);
+            z-index: -2;
+            animation: pan 60s linear infinite alternate;
+        }
+
+        .stroke-text text {
+            font-family: 'Space Grotesk', sans-serif;
+            font-weight: 900;
+            text-transform: uppercase;
+            fill: transparent;
+            stroke: white;
+            stroke-width: 1.5px;
+            stroke-dasharray: 450;
+            stroke-dashoffset: 450;
+            opacity: 0; 
+        }
+
+        .hero-bg-container {
+            position: absolute;
+            inset: 0;
+            z-index: 0;
+            background-color: #020202;
+            background-image: url('https://images.unsplash.com/photo-1629814596130-979929851610?q=80&w=2532&auto=format&fit=crop');
+            background-size: cover;
+            background-position: center;
+            opacity: 0; 
+            transition: opacity 2s ease-out;
+        }
+
+        .content-hidden { opacity: 0; }
+
+        .marquee-mask {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        .project-frame {
+            position: relative;
+            z-index: 10;
+        }
+        
+        .project-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transform: translate(12px, 12px); 
+            z-index: -1;
+            transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
+            border-radius: 1.5rem; 
+        }
+
+        .group:hover .project-frame::before {
+            transform: translate(20px, 20px); 
+            border-color: #0044CC; 
+            opacity: 0.8;
+        }
+        html.lenis { height: auto; }
+        .lenis.lenis-smooth { scroll-behavior: auto; }
+        .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+        .lenis.lenis-stopped { overflow: hidden; }
+
+    </style>
+</head>
+<body class="antialiased selection:bg-white selection:text-black">
+    <div class="preloader" id="preloader">
+        <div class="preloader-bg" id="preloader-bg-layer"></div>
+        <div class="relative z-10 w-full px-6 flex justify-center">
+            <svg viewBox="0 0 800 160" class="w-full max-w-4xl h-auto stroke-text overflow-visible">
+                <text x="50%" y="50%" dy=".35em" text-anchor="middle" class="text-5xl md:text-8xl tracking-[0.2em]" id="maporium-text">
+                    MAPORIUM
+                </text>
+            </svg>
+        </div>
+    </div>
+    <div class="bg-grid"></div>
+    <nav class="fixed top-0 w-full z-50 bg-[#020202]/80 backdrop-blur-md border-b border-white/5 transition-transform duration-500 -translate-y-full" id="navbar">
+        <div class="container mx-auto px-6 h-24 flex justify-between items-center">
+            <a href="#" class="flex items-center hover:opacity-80 transition-opacity">
+                <span class="font-display font-black text-2xl tracking-tighter text-white">
+                    MAPORIUM<span class="text-brand-blue">.</span>
+                </span>
+            </a>
+            <div class="hidden md:flex gap-12">
+                <a href="#work" class="text-xs font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-[0.15em]">Projekty</a>
+                <a href="#services" class="text-xs font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-[0.15em]">Usługi</a>
+                <a href="#about" class="text-xs font-bold text-gray-400 hover:text-white transition-colors uppercase tracking-[0.15em]">Studio</a>
+            </div>
+            <a href="#contact" class="hidden md:block">
+                <span class="border border-white/20 px-8 py-3 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all duration-300">
+                    Kontakt
+                </span>
+            </a>
+        </div>
+    </nav>
+    <main id="main-content" class="content-hidden">
+        <section class="relative h-screen flex items-center justify-center overflow-hidden bg-[#020202]">
+            <div class="hero-bg-container" id="hero-bg"></div>
+            <div class="absolute inset-0 bg-[#020202] opacity-60 pointer-events-none"></div>
+            <div class="absolute inset-0 bg-gradient-to-t from-[#020202] via-transparent to-[#020202]/40 pointer-events-none"></div>
+            <div class="container mx-auto px-6 relative z-10 text-center flex flex-col items-center justify-center h-full pt-16">
+                <div class="overflow-hidden mb-8">
+                    <p class="hero-anim text-white/70 font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] translate-y-full border border-white/10 px-4 py-2 rounded-full backdrop-blur-md bg-black/40">
+                        Architects of the Virtual
+                    </p>
+                </div>
+                <div class="overflow-hidden">
+                    <h1 class="hero-anim font-display text-[13vw] md:text-[9rem] font-black tracking-tighter text-white translate-y-full drop-shadow-2xl leading-[0.9]">
+                        BUDUJEMY <br>
+                        <span class="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-500">LEGENDY</span>
+                    </h1>
+                </div>
+                <div class="mt-8 md:mt-10 overflow-hidden max-w-md md:max-w-2xl">
+                    <p class="hero-anim text-gray-300 text-sm md:text-lg leading-relaxed translate-y-full font-light antialiased">
+                        Przekształcamy wizje w cyfrową rzeczywistość.
+                        Najwyższa jakość architektury i level designu dla Twojego serwera Minecraft.
+                    </p>
+                </div>
+                <div class="mt-12 overflow-hidden">
+                    <div class="hero-anim translate-y-full">
+                        <a href="#work" class="inline-flex items-center gap-4 px-10 py-4 bg-white text-black rounded-full text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-all shadow-xl shadow-white/5 hover:scale-105 transform duration-300">
+                            Eksploruj
+                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class="py-16 bg-[#020202] border-b border-white/5 relative z-20 overflow-hidden">
+            <div class="container mx-auto px-6 mb-8">
+                <div class="text-center md:text-left overflow-hidden">
+                    <p class="text-xs font-mono text-gray-500 uppercase tracking-widest section-title opacity-0 translate-y-10">
+                        Zaufali nam najwięksi
+                    </p>
+                </div>
+            </div>
+            <div class="w-full flex marquee-mask">
+                <div class="flex animate-scroll gap-6 items-center flex-nowrap w-max px-6">
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://i.imgur.com/2Fx2hhH.jpeg" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-purple-500/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Creatoreq</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">72,2K Subskrybentów</p>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://i.imgur.com/c6D99KS.jpeg" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-gray-700/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Lcdx</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">15,2K Subskrybentów</p>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=xFelt" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-green-500/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">xFelt</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">322K Subskrybentów</p>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Dranhis" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-yellow-500/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Dranhis</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">375K Subskrybentów</p>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Afikk" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-purple-500/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Afikk</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">545K Subskrybentów</p>
+                        </div>
+                    </div>
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                        <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Frediii" class="w-12 h-12 rounded-full grayscale group-hover:grayscale-0 transition-all bg-gray-700/10">
+                        <div>
+                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Frediii</h4>
+                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">79.3K Subskrybentów</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <section id="work" class="py-20 md:py-32 bg-[#020202] relative z-10">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-24 pb-8 border-b border-white/10">
+                    <h2 class="font-display text-4xl md:text-5xl font-bold section-title opacity-0 translate-y-10 text-white">
+                        Wybrane Prace
+                    </h2>
+                    <span class="text-xs font-mono text-gray-500 uppercase tracking-widest mt-2 md:mt-0 mb-2">Portfolio (8)</span>
+                </div>
+                <div class="space-y-24 md:space-y-40">
+                    <div class="project-card group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-7 relative">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-brand-blue rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1629814596130-979929851610?q=80&w=2532&auto=format&fit=crop" 
+                                     alt="Orientalne Ogrody" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                        <div class="md:col-span-5 relative z-20 pointer-events-none">
+                            <div class="p-6 md:p-0">
+                                <span class="text-brand-blue text-xs font-bold uppercase tracking-widest mb-3 block">01 / Server Spawn</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">ORIENTALNE<br>OGRODY</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Hub serwerowy o powierzchni 2km². Minimalistyczna architektura połączona z organicznym terenem.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
+                             <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
+                                <span class="text-brand-gold text-xs font-bold uppercase tracking-widest mb-3 block">02 / Fantasy RPG</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">ZAMEK<br>PUSTKI</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Mroczna forteca zawieszona w próżni. Struktury lewitujące i zaawansowane oświetlenie.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7 relative w-full order-1 md:order-2">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-brand-gold rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1610815298568-7c8704250262?q=80&w=2662&auto=format&fit=crop" 
+                                     alt="Zamek Pustki" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-7 relative">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-purple-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1555677284-6a6f9716399a?q=80&w=2604&auto=format&fit=crop" 
+                                     alt="Neonowa Cytadela" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                        <div class="md:col-span-5 relative z-20 pointer-events-none">
+                            <div class="p-6 md:p-0">
+                                <span class="text-purple-500 text-xs font-bold uppercase tracking-widest mb-3 block">03 / City Build</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">NEONOWA<br>CYTADELA</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Futurystyczne miasto z pełnym wnętrzem budynków. Idealne pod serwery ekonomiczne i roleplay.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
+                             <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
+                                <span class="text-green-500 text-xs font-bold uppercase tracking-widest mb-3 block">04 / Organic</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">LEŚNA<br>PRZYSTAŃ</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Wioska wtopiona w gigantyczne drzewa. Organiczne kształty i naturalne flow terenu.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7 relative w-full order-1 md:order-2">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-green-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1440342359726-5918301ec2bf?q=80&w=2604&auto=format&fit=crop" 
+                                     alt="Leśna Przystań" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-7 relative">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-blue-400 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1595878715977-2e8f8df18ea8?q=80&w=2500&auto=format&fit=crop" 
+                                     alt="Atlantyda 2.0" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                        <div class="md:col-span-5 relative z-20 pointer-events-none">
+                            <div class="p-6 md:p-0">
+                                <span class="text-blue-400 text-xs font-bold uppercase tracking-widest mb-3 block">05 / Underwater</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">ATLANTYDA<br>2.0</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Kompleks badawczy na dnie oceanu. Szklane kopuły i podwodne tunele łączące sektory.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
+                             <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
+                                <span class="text-yellow-500 text-xs font-bold uppercase tracking-widest mb-3 block">06 / Desert</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">ZŁOTE<br>PIASKI</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Starożytne ruiny ukryte w oazie. Tajemnicze świątynie, pułapki i ukryte komnaty.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7 relative w-full order-1 md:order-2">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-yellow-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=2500&auto=format&fit=crop" 
+                                     alt="Złote Piaski" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-7 relative">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-sky-400 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1627850604058-52e40de1b847?q=80&w=2533&auto=format&fit=crop" 
+                                     alt="Niebiański Port" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                        <div class="md:col-span-5 relative z-20 pointer-events-none">
+                            <div class="p-6 md:p-0">
+                                <span class="text-sky-400 text-xs font-bold uppercase tracking-widest mb-3 block">07 / Skyblock</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">NIEBIAŃSKI<br>PORT</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Wyspy lewitujące w chmurach połączone mostami energetycznymi. Centralny punkt handlowy.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
+                             <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
+                                <span class="text-red-500 text-xs font-bold uppercase tracking-widest mb-3 block">08 / PvP Arena</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">KOLOSEUM<br>ARENA</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Arena do turniejów PvP z miejscem dla widowni. Zbalansowana pod e-sport i dynamiczną walkę.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7 relative w-full order-1 md:order-2">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-red-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2670&auto=format&fit=crop" 
+                                     alt="Koloseum" 
+                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <section id="services" class="py-20 md:py-32 bg-[#020202] border-t border-white/5">
+            <div class="container mx-auto px-6">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                    <div class="group border-t border-white/20 pt-8 hover:border-white transition-colors duration-500">
+                        <span class="text-xs font-mono text-gray-500 mb-4 block">01</span>
+                        <h3 class="font-display text-2xl font-bold mb-4 text-white">Architektura</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Projektowanie spawnów, lobby i aren. Skupienie na optymalizacji i estetyce.</p>
+                    </div>
+                    <div class="group border-t border-white/20 pt-8 hover:border-white transition-colors duration-500">
+                        <span class="text-xs font-mono text-gray-500 mb-4 block">02</span>
+                        <h3 class="font-display text-2xl font-bold mb-4 text-white">Skiny</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Profesjonalne skiny minecraft</p>
+                    </div>
+                    <div class="group border-t border-white/20 pt-8 hover:border-white transition-colors duration-500">
+                        <span class="text-xs font-mono text-gray-500 mb-4 block">03</span>
+                        <h3 class="font-display text-2xl font-bold mb-4 text-white">Konsulting</h3>
+                        <p class="text-gray-400 text-sm leading-relaxed">Audyt istniejących map i doradztwo w zakresie level designu.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+        <footer id="contact" class="pb-10 px-6 relative z-10 pt-20 md:pt-32 bg-[#020202]">
+            <div class="container mx-auto text-center">         
+                <p class="text-gray-500 font-mono text-xs uppercase tracking-[0.2em] mb-8">Kontakt</p>
+                <a href="mailto:kontakt@maporium.pl" class="inline-block group">
+                    <h2 class="font-display text-5xl md:text-9xl font-bold text-white group-hover:text-gray-300 transition-colors duration-500">
+                        POGADAJMY.
+                    </h2>
+                    <div class="h-px w-0 bg-white group-hover:w-full transition-all duration-500 ease-out"></div>
+                </a>
+                <div class="flex flex-col md:flex-row justify-center gap-6 md:gap-8 mt-12 md:mt-16 mb-20 md:mb-32">
+                    <a href="https://discord.gg/maporium" target="_blank" class="px-8 py-3 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                        Discord
+                    </a>
+                    <button onclick="copyEmail()" id="emailBtn" class="px-8 py-3 border border-white/20 rounded-full text-xs font-bold uppercase tracking-widest hover:bg-white hover:text-black transition-all">
+                        Email
+                    </button>
+                </div>
+                <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/10 pt-8 text-xs text-gray-600 font-mono uppercase tracking-wide gap-4">
+                    <div class="md:mb-0">© 2026 MAPORIUM</div>
+                    <div class="flex gap-8">
+                        <a href="#" class="hover:text-white transition-colors">Instagram</a>
+                        <a href="#" class="hover:text-white transition-colors">Youtube</a>
+                    </div>
+                </div>
+            </div>
+        </footer>
+    </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
+    <script>
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            smooth: true,
+        });
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+        const textElement = document.getElementById('maporium-text');
+        const preloader = document.getElementById('preloader');
+        const navbar = document.getElementById('navbar');
+        const mainContent = document.getElementById('main-content');
+        const heroBg = document.getElementById('hero-bg');
+        const preloaderBgLayer = document.getElementById('preloader-bg-layer');
+        function startAnimation() {
+            if(!preloader) return;
+            const tl = gsap.timeline();
+            tl.to(textElement, {
+                opacity: 1, 
+                strokeDashoffset: 0,
+                duration: 2.5,
+                ease: "power2.inOut"
+            })
+            .to(textElement, {
+                fill: "white",
+                duration: 0.8,
+                ease: "power1.in"
+            }, "-=0.5")
+            .to(preloader, {
+                y: "-100%",
+                duration: 1.2,
+                ease: "power3.inOut",
+                delay: 0.3
+            })
+            .to(navbar, {
+                y: "0%", 
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.8")
+            .to(mainContent, {
+                opacity: 1,
+                onStart: () => {
+                    mainContent.classList.remove('content-hidden');
+                    if(heroBg) heroBg.style.opacity = 1;
+                }
+            }, "-=1")
+            .to('.hero-anim', {
+                y: 0,
+                duration: 1.2,
+                stagger: 0.1,
+                ease: "power3.out"
+            }, "-=0.5")
+            .set(preloader, { display: 'none' });
+        }
+        window.addEventListener('load', () => {
+            setTimeout(startAnimation, 100);
+        });
+        gsap.registerPlugin(ScrollTrigger);
+        if(document.getElementById("hero-bg")) {
+            gsap.to("#hero-bg", {
+                scrollTrigger: {
+                    trigger: "body",
+                    start: "top top",
+                    end: "bottom top",
+                    scrub: true
+                },
+                y: 200,
+                scale: 1.1
+            });
+        }
+        gsap.utils.toArray('.section-title').forEach(title => {
+            gsap.to(title, {
+                scrollTrigger: {
+                    trigger: title,
+                    start: "top 85%",
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+        gsap.utils.toArray('.collaborator-card').forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 90%",
+                },
+                y: 0,
+                opacity: 1,
+                duration: 0.8,
+                delay: i * 0.1,
+                ease: "power3.out"
+            });
+        });
+        gsap.utils.toArray('.project-card').forEach((card, i) => {
+            gsap.to(card, {
+                scrollTrigger: {
+                    trigger: card,
+                    start: "top 90%",
+                },
+                y: 0,
+                opacity: 1,
+                duration: 1,
+                ease: "power3.out"
+            });
+        });
+        function copyEmail() {
+            const email = 'kontakt@maporium.pl';
+            const textArea = document.createElement("textarea");
+            textArea.value = email;
+            document.body.appendChild(textArea);
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                const btn = document.getElementById('emailBtn');
+                btn.innerText = 'Skopiowano!';
+                setTimeout(() => {
+                    btn.innerText = 'Email';
+                }, 2000);
+            } catch (err) {
+                console.error('Nie udało się skopiować', err);
+            }
+            document.body.removeChild(textArea);
+        }
+
+    </script>
+</body>
+</html>
