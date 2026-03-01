@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-     <!-- 
+    <!-- 
     ========================================================================================================================
     AUTOR PROJEKTU I WŁAŚCICIEL KODU:
     
@@ -73,7 +73,6 @@
             overflow-x: hidden;
             cursor: auto;
         }
-
         .bg-grid {
             position: fixed;
             top: 0;
@@ -88,7 +87,6 @@
             pointer-events: none;
             opacity: 0.4; 
         }
-
         .preloader {
             position: fixed;
             inset: 0;
@@ -99,7 +97,6 @@
             align-items: center;
             overflow: hidden;
         }
-
         .preloader-bg {
             position: absolute;
             inset: -20px;
@@ -110,7 +107,6 @@
             z-index: -2;
             animation: pan 60s linear infinite alternate;
         }
-
         .stroke-text text {
             font-family: 'Space Grotesk', sans-serif;
             font-weight: 900;
@@ -122,7 +118,6 @@
             stroke-dashoffset: 450;
             opacity: 0; 
         }
-
         .hero-bg-container {
             position: absolute;
             inset: 0;
@@ -134,19 +129,15 @@
             opacity: 0; 
             transition: opacity 2s ease-out;
         }
-
         .content-hidden { opacity: 0; }
-
         .marquee-mask {
             mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
             -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
         }
-
         .project-frame {
             position: relative;
             z-index: 10;
         }
-        
         .project-frame::before {
             content: '';
             position: absolute;
@@ -157,7 +148,6 @@
             transition: all 0.5s cubic-bezier(0.2, 1, 0.3, 1);
             border-radius: 1.5rem; 
         }
-
         .group:hover .project-frame::before {
             transform: translate(20px, 20px); 
             border-color: #0044CC; 
@@ -167,7 +157,6 @@
         .lenis.lenis-smooth { scroll-behavior: auto; }
         .lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
         .lenis.lenis-stopped { overflow: hidden; }
-
     </style>
 </head>
 <body class="antialiased selection:bg-white selection:text-black">
@@ -233,6 +222,7 @@
                 </div>
             </div>
         </section>
+        
         <section class="py-16 bg-[#020202] border-b border-white/5 relative z-20 overflow-hidden">
             <div class="container mx-auto px-6 mb-8">
                 <div class="text-center md:text-left overflow-hidden">
@@ -242,7 +232,8 @@
                 </div>
             </div>
             <div class="w-full flex marquee-mask">
-                <div class="flex animate-scroll gap-6 items-center flex-nowrap w-max px-6">
+                <div class="flex animate-scroll gap-6 items-center flex-nowrap w-max pr-6">
+                    <!-- ORYGINALNE 4 ELEMENTY -->
                     <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
                         <img src="https://i.imgur.com/2Fx2hhH.jpeg" class="w-12 h-12 rounded-full transition-all bg-purple-500/10">
                         <div>
@@ -271,66 +262,40 @@
                             <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">596K Subskrybentów</p>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
-                        <img src="https://i.imgur.com/c6D99KS.jpeg" class="w-12 h-12 rounded-full transition-all bg-purple-500/10">
-                        <div>
-                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Lcdx</h4>
-                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">15,2K Subskrybentów</p>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
-                        <img src="https://i.imgur.com/VGMpS4O.jpeg" class="w-12 h-12 rounded-full transition-all bg-gray-700/10">
-                        <div>
-                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Tintall</h4>
-                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">143K Subskrybentów</p>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                    
+                    <!-- SKLONOWANE 4 ELEMENTY DLA ZROBIENIA PŁYNNEJ PĘTLI -->
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]" aria-hidden="true">
                         <img src="https://i.imgur.com/2Fx2hhH.jpeg" class="w-12 h-12 rounded-full transition-all bg-purple-500/10">
                         <div>
                             <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Creatoreq</h4>
                             <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">72,2K Subskrybentów</p>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]" aria-hidden="true">
                         <img src="https://i.imgur.com/c6D99KS.jpeg" class="w-12 h-12 rounded-full transition-all bg-gray-700/10">
                         <div>
                             <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Lcdx</h4>
                             <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">15,2K Subskrybentów</p>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]" aria-hidden="true">
                         <img src="https://i.imgur.com/VGMpS4O.jpeg" class="w-12 h-12 rounded-full transition-all bg-green-500/10">
                         <div>
                             <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Tintall</h4>
                             <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">143K Subskrybentów</p>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
+                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]" aria-hidden="true">
                         <img src="https://i.imgur.com/b36PD7r.jpeg" class="w-12 h-12 rounded-full transition-all bg-yellow-500/10">
                         <div>
                             <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Jam jest Jakub</h4>
                             <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">596K Subskrybentów</p>
                         </div>
                     </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
-                        <img src="https://i.imgur.com/c6D99KS.jpeg" class="w-12 h-12 rounded-full transition-all bg-purple-500/10">
-                        <div>
-                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Lcdx</h4>
-                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">15,2K Subskrybentów</p>
-                        </div>
-                    </div>
-                    <div class="flex-shrink-0 w-[300px] flex items-center gap-4 p-4 rounded-xl bg-[#0a0a0a] border border-white/5 hover:border-brand-blue/30 transition-all duration-300 group hover:bg-[#0f0f0f]">
-                        <img src="https://i.imgur.com/VGMpS4O.jpeg" class="w-12 h-12 rounded-full transition-all bg-gray-700/10">
-                        <div>
-                            <h4 class="font-display font-bold text-white leading-tight text-lg group-hover:text-brand-blue transition-colors">Tintall</h4>
-                            <p class="text-[10px] text-gray-500 font-mono uppercase tracking-wide">143K Subskrybentów</p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
         </section>
+
         <section id="work" class="py-20 md:py-32 bg-[#020202] relative z-10">
             <div class="container mx-auto px-6">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-end mb-16 md:mb-24 pb-8 border-b border-white/10">
@@ -343,21 +308,20 @@
                         <div class="md:col-span-7 relative">
                             <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-brand-blue rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
                             <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
-                                <img src="https://i.imgur.com/5hMitCv.jpeg" 
-                                     alt="Koloseum" 
-                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                                <img src="https://i.imgur.com/5hMitCv.jpeg" alt="Koloseum" class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
                             </div>
                         </div>
                         <div class="md:col-span-5 relative z-20 pointer-events-none">
                             <div class="p-6 md:p-0">
                                 <span class="text-brand-blue text-xs font-bold uppercase tracking-widest mb-3 block">01.</span>
-                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">Koloseum<br></h3>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">Koloseum</h3>
                                 <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
                                     Potężne Koloseum PvP stworzone dla Creatorqa – rzymski monumentalizm w służbie dynamicznej rozgrywki.
                                 </p>
                             </div>
                         </div>
                     </div>
+
                     <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
                         <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
                              <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
@@ -371,19 +335,16 @@
                         <div class="md:col-span-7 relative w-full order-1 md:order-2">
                             <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-brand-gold rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
                             <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
-                                <img src="https://i.imgur.com/2jrB8Js.jpeg" 
-                                     alt="Zaginione Miasto Wardenów" 
-                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                                <img src="https://i.imgur.com/2jrB8Js.jpeg" alt="Zaginione Miasto Wardenów" class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
                             </div>
                         </div>
                     </div>
+
                     <div class="project-card group relative grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
                         <div class="md:col-span-7 relative">
                             <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-purple-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
                             <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
-                                <img src="https://i.imgur.com/ZFPo65I.png" 
-                                     alt="Neonowa Cytadela" 
-                                     class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                                <img src="https://i.imgur.com/ZFPo65I.png" alt="Skin Minecraft" class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
                             </div>
                         </div>
                         <div class="md:col-span-5 relative z-20 pointer-events-none">
@@ -396,9 +357,28 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="project-card group relative flex flex-col md:grid md:grid-cols-12 gap-6 md:gap-12 items-center opacity-0 translate-y-20">
+                        <div class="md:col-span-5 relative z-20 pointer-events-none order-2 md:order-1 text-left md:text-right w-full">
+                             <div class="p-6 md:p-0 flex flex-col items-start md:items-end">
+                                <span class="text-green-500 text-xs font-bold uppercase tracking-widest mb-3 block">04.</span>
+                                <h3 class="text-4xl md:text-6xl font-display font-bold mb-6 text-white leading-tight">Kit sigma<br>creatoreq</h3>
+                                <p class="text-gray-400 text-sm leading-relaxed max-w-sm">
+                                    Estetyczna mała budowla
+                                </p>
+                            </div>
+                        </div>
+                        <div class="md:col-span-7 relative w-full order-1 md:order-2">
+                            <div class="absolute inset-0 translate-x-3 translate-y-3 border-2 border-green-500 rounded-3xl z-0 transition-transform duration-500 group-hover:translate-x-6 group-hover:translate-y-6"></div>
+                            <div class="project-frame overflow-hidden rounded-3xl relative aspect-[4/3] md:aspect-auto md:h-[550px]">
+                                <img src="https://i.imgur.com/vAEIHxc.jpeg" alt="Projekt 4" class="w-full h-full object-cover transition-transform duration-[1.5s] cubic-bezier(0.2, 1, 0.3, 1) group-hover:scale-105">
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        <section>
+        </section>
+
         <section id="services" class="py-20 md:py-32 bg-[#020202] border-t border-white/5">
             <div class="container mx-auto px-6">
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -420,6 +400,7 @@
                 </div>
             </div>
         </section>
+
         <footer id="contact" class="pb-10 px-6 relative z-10 pt-20 md:pt-32 bg-[#020202]">
             <div class="container mx-auto text-center">         
                 <p class="text-gray-500 font-mono text-xs uppercase tracking-[0.2em] mb-8">Kontakt</p>
@@ -438,10 +419,8 @@
                     </button>
                 </div>
                 <div class="flex flex-col md:flex-row justify-between items-center border-t border-white/10 pt-8 text-xs text-gray-600 font-mono uppercase tracking-wide gap-4">
-                    <div class="md:mb-0">© 2026 MAPORIUM</div>
-                    <a href="https://xfazi.pl" target="_blank" class="hover:text-white transition-colors">
-                        Design i Wykonanie: X_FAZI
-                    </a>
+                    <div>© 2026 MAPORIUM</div>
+                    <a href="https://xfazi.pl" target="_blank" class="hover:text-white transition-colors">Design i Wykonanie: X_FAZI</a>
                     <div class="flex gap-8">
                         <a href="#" class="hover:text-white transition-colors">Instagram</a>
                         <a href="#" class="hover:text-white transition-colors">YouTube</a>
@@ -450,6 +429,7 @@
             </div>
         </footer>
     </main>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/studio-freight/lenis@1.0.29/bundled/lenis.min.js"></script>
@@ -470,7 +450,7 @@
         const navbar = document.getElementById('navbar');
         const mainContent = document.getElementById('main-content');
         const heroBg = document.getElementById('hero-bg');
-        const preloaderBgLayer = document.getElementById('preloader-bg-layer');
+
         function startAnimation() {
             if(!preloader) return;
             const tl = gsap.timeline();
@@ -511,10 +491,13 @@
             }, "-=0.5")
             .set(preloader, { display: 'none' });
         }
+
         window.addEventListener('load', () => {
             setTimeout(startAnimation, 100);
         });
+
         gsap.registerPlugin(ScrollTrigger);
+
         if(document.getElementById("hero-bg")) {
             gsap.to("#hero-bg", {
                 scrollTrigger: {
@@ -527,6 +510,7 @@
                 scale: 1.1
             });
         }
+
         gsap.utils.toArray('.section-title').forEach(title => {
             gsap.to(title, {
                 scrollTrigger: {
@@ -539,20 +523,8 @@
                 ease: "power3.out"
             });
         });
-        gsap.utils.toArray('.collaborator-card').forEach((card, i) => {
-            gsap.to(card, {
-                scrollTrigger: {
-                    trigger: card,
-                    start: "top 90%",
-                },
-                y: 0,
-                opacity: 1,
-                duration: 0.8,
-                delay: i * 0.1,
-                ease: "power3.out"
-            });
-        });
-        gsap.utils.toArray('.project-card').forEach((card, i) => {
+
+        gsap.utils.toArray('.project-card').forEach((card) => {
             gsap.to(card, {
                 scrollTrigger: {
                     trigger: card,
@@ -564,6 +536,7 @@
                 ease: "power3.out"
             });
         });
+
         function copyEmail() {
             const email = 'kontakt@maporium.pl';
             const textArea = document.createElement("textarea");
@@ -578,11 +551,10 @@
                     btn.innerText = 'Email';
                 }, 2000);
             } catch (err) {
-                console.error('Nie udało się skopiować', err);
+                console.error(err);
             }
             document.body.removeChild(textArea);
         }
-
     </script>
 </body>
 </html>
